@@ -1,0 +1,9 @@
+#Envirmonment variables
+.env
+
+#Node Modules
+node_modules/
+
+#Authentication Logs
+*.log 
+logs/ 
