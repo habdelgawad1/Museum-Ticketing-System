@@ -2,12 +2,10 @@ const express = require('express');
 const AuthRouter = express.Router();
 const { signup, login } = require('../controllers/AuthController.js');
 
-API = '/api/v1'
-
-AuthRouter.route(API + "/register")
+AuthRouter.route("/register")
     .post(signup);
 
-AuthRouter.route(API + "/login")
+AuthRouter.route("/login")
     .post(login);
 
-module.exports = router;
+module.exports = AuthRouter;

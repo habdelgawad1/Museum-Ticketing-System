@@ -9,6 +9,7 @@ const TourRoutes = require('./routes/TourRoutes.js');
 const ReviewRoutes = require('./routes/ReviewRoutes.js');
 const AdminRoutes = require('./routes/AdminRoutes.js');
 const AuthRoutes = require('./routes/AuthRoutes.js');
+
 const cookieParser = require('cookie-parser');
 app.use(express.json());
 app.use(cookieParser());
