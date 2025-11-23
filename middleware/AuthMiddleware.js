@@ -1,5 +1,5 @@
 const sanitizeInput = (value) => {
-    if (typeof value !== 'string') {
+    if (typeof value !== 'string') return "";{
         return value.trim().replace(/'/g, "''");
     }
 };
@@ -45,11 +45,10 @@ const validatePassword = (password) => {
 
 const validateSignup = (req, res, next) => {
     let { name, email, password} = req.body;
-    name = sanitizeInput(name);
     email = sanitizeInput(email);
     password = sanitizeInput(password);
 
-    const requiredError = validateRequired(req.body, ['name', 'email', 'password']);
+    const requiredError = validateRequired({email, password}, ['name', 'email', 'password']);
     if (requiredError) {
         return res.status(400).json({ message: requiredError});
     }
@@ -73,7 +72,7 @@ const validateLogin = (req, res, next) => {
     email = sanitizeInput(email);
     password = sanitizeInput(password);
 
-    const requiredError = validateRequired(req.body, ['email', 'password']);
+    const requiredError = validateRequired({email, password}, ['email', 'password']);
     if (requiredError) {
         return res.status(400).json({ message: requiredError});
     }
