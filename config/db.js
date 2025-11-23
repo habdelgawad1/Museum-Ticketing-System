@@ -19,6 +19,7 @@ const CreateToursTable = `
         Description TEXT,
         StartTime DATETIME NOT NULL,
         EndTime DATETIME NOT NULL,
+        Date DATETIME NOT NULL, 
         MaxParticipants INTEGER NOT NULL,
         AvailableSpots INTEGER NOT NULL,
         Price REAL NOT NULL,
@@ -36,6 +37,8 @@ const CreateBookingsTable = `
 const CreateReviewsTable = `
     CREATE TABLE IF NOT EXISTS Reviews (
         ReviewID INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserID INTEGER NOT NULL,
+        TourID INTEGER NOT NULL,
         BookingID INTEGER NOT NULL,
         Rating INTEGER NOT NULL CHECK (Rating BETWEEN 1 AND 5),
         Comment TEXT)`;
