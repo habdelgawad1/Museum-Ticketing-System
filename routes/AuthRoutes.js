@@ -1,11 +1,12 @@
 const express = require('express');
 const AuthRouter = express.Router();
 const { signup, login } = require('../controllers/AuthController.js');
+const {validateSignup, validateLogin} = require('../middlewares/AuthMiddleware.js');
 
 AuthRouter.route("/register")
-    .post(signup);
+    .post(validateSignup, signup);
 
 AuthRouter.route("/login")
-    .post(login);
+    .post(validateLogin, login);
 
 module.exports = AuthRouter;
