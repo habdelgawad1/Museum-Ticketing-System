@@ -1,9 +1,13 @@
 const express = require('express');
 const UserRouter = express.Router();
-const { updateProfile } = require('../controllers/UserController');
-const validateUpdateProfile = require('../middleware/UserMiddleware');
+const { updateProfile, deleteUser } = require('../controllers/UserController');
+const { validateUpdateProfile }= require('../middleware/UserMiddleware');
+const { authenticateToken } = require('../middleware/AuthMiddleware');
 
 UserRouter.route("/update")
-    .put(validateUpdateProfile, updateProfile);
+    .put(authenticateToken, validateUpdateProfile, updateProfile);
 
-module.exports = router;
+UserRouter.route("/delete")
+    .delete(authenticateToken, deleteUser);
+
+module.exports = UserRouter;

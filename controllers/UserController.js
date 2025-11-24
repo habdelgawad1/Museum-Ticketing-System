@@ -61,8 +61,34 @@ const updateProfile = (req, res) => {
     });
 };
 
+const deleteUser = (req, res) => {
+    const userID = req.body.userID;
+    const query = `DELETE FROM users WHERE UserID = ?`;
+
+    db.get(query, userID, (err, row) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Error Deleting User"});
+        }
+        if (!row) {
+            return res.status(400).json({ message: "User Not Found"});
+        }
+
+        const deletequery = `DELETE FROM users WHERE UserID = ?`;
+
+        db.run(deletequery, userID, function(err){
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ error: "Error Deleting User"});
+            }
+            return res.status(200).json({ message: "User Successfully Deleted"});
+        });
+    });
+};
+
 module.exports ={
-    updateProfile
+    updateProfile,
+    deleteUser
 }
 
 

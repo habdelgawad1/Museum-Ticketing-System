@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const sanitizeInput = (value) => {
     if (typeof value !== 'string') return "";{
         return value.trim().replace(/'/g, "''");
@@ -86,7 +88,25 @@ const validateLogin = (req, res, next) => {
     next();
 };
 
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Access Token Required'});
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid Access Token' });
+        }
+        req.user = user;
+        next();
+    });   
+};
+
 module.exports = {
     validateSignup,
-    validateLogin
+    validateLogin,
+    authenticateToken
 };
