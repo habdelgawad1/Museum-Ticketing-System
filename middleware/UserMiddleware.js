@@ -22,23 +22,25 @@ const isStrongPassword = (password) => {
 
 const validateUpdateProfile = (req, res, next) => {
     let { userID, name, email, password, phone} = req.body;
-    if (!userID || !name || !email || !password || !phone) {
+    if (!userID || !name || !email || !phone) {
         return res.status(400).json({ message: 'All fields are required' });
     }
     email = sanitizeInput(email);
-    password = sanitizeInput(password);
     
     if (!isValidEmail(email)) {
         return res.status(400).json({ message: "Invalid Email Format"});
     }
 
-    if (!isStrongPassword(password)) {
-        return res.status(400).json({ message: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"});
-    }
+    if (password !== undefined && password !== null && String(password).trim() !== "") {
+        password = sanitizeInput(password);
+        if (!isStrongPassword(password)) {
+            return res.status(400).json({ message: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"});
+        }
 
-    req.body = { userID, name, email, password, phone};
-    next();
-};
+        req.body = { name, password, email, phone, role};
+        next();
+    };
+}
 
 module.exports = {
     validateUpdateProfile

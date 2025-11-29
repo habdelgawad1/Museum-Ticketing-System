@@ -8,7 +8,7 @@ const updateProfile = (req, res) => {
     const password = req.body.password;
     const phone = req.body.phone;
 
-    if (!userID || !name || !email || !password || !phone) {
+    if (!userID || !name || !email || !phone) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -23,7 +23,7 @@ const updateProfile = (req, res) => {
             return res.status(400).json({ message: "User Not Found"});
         }
 
-            if (password){
+            if (password && password.trim() !== "") {
             bcrypt.hash(password, 10, (err, hashedPassword) => {
                 if (err) {
                     return res.status(500).json({ message: "Error in Hashing Password"});
@@ -76,10 +76,13 @@ const deleteUser = (req, res) => {
 
         const deletequery = `DELETE FROM users WHERE UserID = ?`;
 
-        db.run(deletequery, userID, function(err){
+        db.run(deletequery, [userID], function(err){
             if (err) {
                 console.log(err);
                 return res.status(500).json({ error: "Error Deleting User"});
+            }
+            if (this.changes === 0) {
+                return res.status(400).json({ message: "User Not Found"});
             }
             return res.status(200).json({ message: "User Successfully Deleted"});
         });
