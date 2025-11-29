@@ -1,8 +1,7 @@
 const sanitizeInput = (value) => {
-    if (typeof value !== 'string') return "";{
+    if (typeof value !== 'string') return "";
         return value.trim().replace(/'/g, "''");
-    }
-};
+    };
 
 const isValidEmail = (email) => {
     if (!email){
@@ -21,8 +20,8 @@ const isStrongPassword = (password) => {
 };
 
 const validateUpdateProfile = (req, res, next) => {
-    let { userID, name, email, password, phone} = req.body;
-    if (!userID || !name || !email || !phone) {
+    let { name, email, password, phone} = req.body;
+    if (!name || !email || !phone) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -39,9 +38,9 @@ const validateUpdateProfile = (req, res, next) => {
         if (!isStrongPassword(password)) {
             return res.status(400).json({ message: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"});
         }
-        req.body = { userID, name, password, email, phone};
+        req.body = { name, password, email, phone};
     } else {
-        req.body = {userID, name, email, phone};
+        req.body = { name, email, phone};
     }
         next();
 }
