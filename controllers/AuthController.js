@@ -10,7 +10,7 @@ const signup = (req, res) => {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
-    const role = req.body.role;
+    const role = req.body.role || 'visitor';
     const phone = req.body.phone;
 
     if (!name || !email || !password || !role || !phone) {
@@ -22,13 +22,8 @@ const signup = (req, res) => {
             return res.status(500).json({ message: "Error in Hashing Password"});
         }
 
-        const query = `INSERT INTO users (name, email, password, role, phone) VALUES (?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO Users (name, email, password, role, phone) VALUES (?, ?, ?, ?, ?)`;
         const params = [name, email, hashedpassword, role, phone];
-
-        res.cookie('SignedUp', `User Email ${email}`, {
-            httpOnly: true,
-            maxAge: 15*60*1000
-        });
 
         db.run(query, params, (err) =>{
             if (err) {
@@ -57,7 +52,7 @@ const login = (req, res) => {
         return res.status(400).json({ message: "Missing required fields"});
     }
 
-    const query = `SELECT * FROM users WHERE email = ?`;
+    const query = `SELECT * FROM Users WHERE Email = ?`;
     const params = email;
 
     db.get(query, params, (err, row) => {

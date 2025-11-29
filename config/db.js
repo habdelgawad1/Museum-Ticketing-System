@@ -30,7 +30,7 @@ const CreateBookingsTable = `
     CREATE TABLE IF NOT EXISTS Bookings (
         BookingID INTEGER PRIMARY KEY AUTOINCREMENT,
         UserID INTEGER NOT NULL,
-        TourID INETEGR NOT NULL,
+        TourID INTEEGR NOT NULL,
         NumberOfTickets INTEGER NOT NULL,
         BookingStatus TEXT NOT NULL CHECK (BookingStatus IN ('confirmed', 'canceled', 'completed')))`;
 

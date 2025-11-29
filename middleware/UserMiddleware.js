@@ -25,7 +25,10 @@ const validateUpdateProfile = (req, res, next) => {
     if (!userID || !name || !email || !phone) {
         return res.status(400).json({ message: 'All fields are required' });
     }
+
+    name = sanitizeInput(name);
     email = sanitizeInput(email);
+    phone = sanitizeInput(phone);
     
     if (!isValidEmail(email)) {
         return res.status(400).json({ message: "Invalid Email Format"});
@@ -36,10 +39,11 @@ const validateUpdateProfile = (req, res, next) => {
         if (!isStrongPassword(password)) {
             return res.status(400).json({ message: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"});
         }
-
-        req.body = { name, password, email, phone, role};
+        req.body = { name, password, email, phone};
+    } else {
+        req.body = {userID, name, email, phone};
+    }
         next();
-    };
 }
 
 module.exports = {

@@ -37,17 +37,18 @@ const sanitizeInput = (value) => {
   };
 
   const validateSignup = (req, res, next) => {
-        let { name, email, password } = req.body;
-        name = sanitizeInput(name);
+        let { name, email, password, phone, role } = req.body;
+        name = req.body.name;
         email = sanitizeInput(email);
-        password = sanitizeInput(password);
+        phone =req.body.phone;
+        role = req.body.role || 'visitor';
 
         const requiredError = validateRequired(req.body, ['name', 'email', 'password']);
         if (requiredError) {
             return res.status(400).json({ error: requiredError });
         }
 
-        const emailError = isValidEmail(email);
+        const emailError = validateEmail(email);
         if (emailError) {
             return res.status(400).json({ error: emailError });
         }
@@ -57,7 +58,12 @@ const sanitizeInput = (value) => {
             return res.status(400).json({ error: passwordError });
         }
 
-        req.body = { name, email, password};
+        const validRoles = ['admin', 'guide', 'visitor'];
+        if (!validRoles.includes(role)) {
+          return res.status(400).json({ error: 'Invalid Role'});
+        }
+
+        req.body = { name, email, password, phone, role};
         next();
     };
 
