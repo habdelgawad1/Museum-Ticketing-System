@@ -14,7 +14,7 @@ const updateProfile = (req, res) => {
 
     const query = `SELECT * FROM Users WHERE UserID = ?`;
 
-    db.get(query, userID, (err,row) => {
+    db.get(query, [userID], (err,row) => {
         if (err) {
             console.log(err);
             return res.status(500).json({ error: "Error Retrieving User"});
@@ -63,9 +63,9 @@ const updateProfile = (req, res) => {
 
 const deleteUser = (req, res) => {
     const userID = req.body.userID;
-    const query = `DELETE FROM Users WHERE UserID = ?`;
+    const query = `SELECT FROM Users WHERE UserID = ?`;
 
-    db.get(query, userID, (err, row) => {
+    db.get(query, [userID], (err, row) => {
         if (err) {
             console.log(err);
             return res.status(500).json({ error: "Error Deleting User"});
