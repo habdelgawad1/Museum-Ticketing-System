@@ -1,6 +1,6 @@
 const express = require('express');
 const UserRouter = express.Router();
-const { updateProfile, deleteUser } = require('../controllers/UserController');
+const { updateProfile, deleteUser, getUserProfile } = require('../controllers/UserController');
 const { validateUpdateProfile }= require('../middleware/UserMiddleware');
 
 UserRouter.route("/update")
@@ -8,5 +8,8 @@ UserRouter.route("/update")
 
 UserRouter.route("/delete")
     .delete(deleteUser);
+
+UserRouter.route("/profile")
+    .get(getUserProfile);
 
 module.exports = UserRouter;

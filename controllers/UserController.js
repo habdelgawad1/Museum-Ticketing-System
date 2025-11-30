@@ -63,7 +63,12 @@ const updateProfile = (req, res) => {
 
 const deleteUser = (req, res) => {
     const userID = req.body.userID;
-    const query = `SELECT FROM Users WHERE UserID = ?`;
+
+    if (!userID) {
+        return res.status(400).json({ message: "UserID is required"});
+    }
+
+    const query = `SELECT * FROM Users WHERE UserID = ?`;
 
     db.get(query, [userID], (err, row) => {
         if (err) {
@@ -82,16 +87,41 @@ const deleteUser = (req, res) => {
                 return res.status(500).json({ error: "Error Deleting User"});
             }
             if (this.changes === 0) {
-                return res.status(400).json({ message: "User Not Found"});
+                return res.status(404).json({ message: "User Not Found"});
             }
             return res.status(200).json({ message: "User Successfully Deleted"});
         });
     });
 };
 
+const getUserProfile = (req, res) => {
+    const userID = req.params.userID;
+
+    if (!userID) {
+        return res.status(400).json({ message: "UserID is required"});
+    }
+
+    const query = `SELECT UserID, Name, Email, Phone FROM Users WHERE UserID = ?`;
+
+    db.get(query, [userID], (err, row) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Error Retrieving User Profile"});
+        }
+
+        if (!row) {
+            return res.status(404).json({ message: "User Not Found"});
+        }
+
+        return res.status(200).json({ message: "User Profile Retrieved Successfully", profile: row});
+
+    });
+}
+
 module.exports ={
     updateProfile,
-    deleteUser
+    deleteUser, 
+    getUserProfile
 }
 
 
