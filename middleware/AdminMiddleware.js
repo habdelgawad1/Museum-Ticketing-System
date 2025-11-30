@@ -4,7 +4,7 @@ const sanitizeInput = (value) => {
 }
 
 const validateCreateTour = (req, res, next) => {
-    const { guideID, title, description, startTime, endTime, date, maxParticipants, price, language } = req.body;
+    let { guideID, title, description, startTime, endTime, date, maxParticipants, price, language } = req.body;
 
     if (!guideID || !title  || !startTime || !endTime || !date || !maxParticipants || !price || !language) {
         return res.status(400).json({ error: 'Missing required fields' });

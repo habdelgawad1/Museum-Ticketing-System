@@ -3,7 +3,7 @@ const {db} = require('../config/db');
 const createTour = (req, res) => {
     const {guideID, title, description, startTime, endTime, date, maxParticipants, price, language} = req.body;
     
-    if (!guideID || !title || !description || !startTime || !endTime || !date || !maxParticipants || !price || !language) {
+    if (!guideID || !title || !startTime || !endTime || !date || !maxParticipants || !price || !language) {
         return res.status(400).json({error: 'All fields are required'});
     }
 
@@ -23,7 +23,7 @@ const createTour = (req, res) => {
         }
 
         const query = `INSERT INTO Tours VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const params = [guideID, title, description, startTime, endTime, date, maxParticipants, maxParticipants, price, language];
+        const params = [guideID, title, description || '', startTime, endTime, date, maxParticipants, maxParticipants, price, language, 'scheduled'];
 
         db.run(query, params, function(err) {
             if (err) {
@@ -109,7 +109,7 @@ const updateTourStatus = (req, res) => {
             return res.status(404).json({error: 'Tour not found'});
         }
 
-        const query = 'UPDATE Tours SET Status = ? WHERE TourID = ?';
+        const query = 'UPDATE Tours SET TourStatus = ? WHERE TourID = ?';
 
         db.run(query, [tourStatus, tourID], function(err) {
             if (err) {
