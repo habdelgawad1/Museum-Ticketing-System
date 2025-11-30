@@ -9,7 +9,7 @@ UserRouter.route("/update")
 UserRouter.route("/delete")
     .delete(deleteUser);
 
-UserRouter.route("/profile")
+UserRouter.route("/profile/:userID")
     .get(getUserProfile);
 
 module.exports = UserRouter;
