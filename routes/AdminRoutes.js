@@ -1,4 +1,14 @@
 const express = require('express');
-const router = express.Router();
+const AdminRouter = express.Router();
+const {createTour, getAllToursAdmin, deleteTour, updateTourStatus} = require('../controllers/AdminController');
+const {validateCreateTour} = require('../middleware/AuthMiddleware');
 
-module.exports = router;
+AdminRouter.route('/tours')
+    .post(validateCreateTour, createTour)
+    .get(getAllToursAdmin);
+
+AdminRouter.route('/tours/:tourID')
+    .delete(deleteTour)
+    .put(updateTourStatus);
+    
+module.exports = AdminRouter;
