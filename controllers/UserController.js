@@ -95,7 +95,7 @@ const deleteUser = (req, res) => {
 };
 
 const getUserProfile = (req, res) => {
-    const userID = req.params.userID;
+    const userID = req.body.userID;
 
     if (!userID) {
         return res.status(400).json({ message: "UserID is required"});
