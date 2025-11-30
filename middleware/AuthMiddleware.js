@@ -1,5 +1,10 @@
 const sanitizeInput = (value) => {
     if (typeof value !== 'string') return '';
+    return value.trim().replace(/'/g, "''");
+  };
+
+  const sanitizeEmail = (value) => {
+    if (typeof value !== 'string') return '';
     return value.trim().replace(/'/g, "''").toLowerCase();
   };
  
@@ -39,7 +44,8 @@ const sanitizeInput = (value) => {
   const validateSignup = (req, res, next) => {
         let { name, email, password, phone, role } = req.body;
         name = req.body.name;
-        email = sanitizeInput(email);
+        email = sanitizeEmail(email);
+        password = sanitizeInput(password);
         phone =req.body.phone;
         role = req.body.role || 'visitor';
 
@@ -69,7 +75,7 @@ const sanitizeInput = (value) => {
 
     const validateLogin = (req, res, next) => {
         let { email, password } = req.body;
-        email = sanitizeInput(email);
+        email = sanitizeEmail(email);
         password = sanitizeInput(password);
 
         const requiredError = validateRequired(req.body, ['email', 'password']);
