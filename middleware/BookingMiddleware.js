@@ -6,23 +6,23 @@ const sanitizeInput = (value) => {
 };
 
 const validateCreateBooking = (req, res, next) => {
-    let {userID, tourID, numberOfTickets} = req.body;
+    let {userID, TourID, NumberOfTickets} = req.body;
 
-    if (!userID || !tourID || !numberOfTickets) {
+    if (!userID || !TourID || !NumberOfTickets) {
         return res.status(400).json({error: 'All fields are required'});
     }
 
     userID = parseInt(userID);
-    tourID = parseInt(tourID);
-    numberOfTickets = parseInt(numberOfTickets);
+    TourID = parseInt(TourID);
+    NumberOfTickets = parseInt(NumberOfTickets);
 
-    if (isNaN(userID) || isNaN(tourID) || isNaN(numberOfTickets) || numberOfTickets <= 0) {
+    if (isNaN(userID) || isNaN(TourID) || isNaN(NumberOfTickets) || NumberOfTickets <= 0) {
         return res.status(400).json({error: 'Invalid input data'});
     }
 
     req.body.userID = userID;
-    req.body.tourID = tourID;
-    req.body.numberOfTickets = numberOfTickets;
+    req.body.TourID = TourID;
+    req.body.NumberOfTickets = NumberOfTickets;
     next();
 };
 

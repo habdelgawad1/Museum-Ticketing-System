@@ -1,13 +1,15 @@
 const {db} = require('../config/db');
 
 const createBooking = (req, res) => {
-    const {userID, TourID, numberOfTickets} = req.body;
+    const userID = req.body.userID;
+    const TourID = req.body.tourID;
+    const NumberOfTickets = req.body.NumberOfTickets;
 
-    if (!userID || !TourID || !numberOfTickets) {
+    if (!userID || !TourID || !NumberOfTickets) {
         return res.status(400).json({error: 'All fields are required'});
     }
 
-    if (numberOfTickets <= 0) {
+    if (NumberOfTickets <= 0) {
         return res.status(400).json({error: 'Number of tickets must be greater than zero'});
     }
 
@@ -32,7 +34,7 @@ const createBooking = (req, res) => {
                 return res.status(404).json({error: 'Tour not found'});
             }
 
-            if (tour.AvailableSpots < numberOfTickets) {
+            if (tour.AvailableSpots < NumberOfTickets) {
                 return res.status(400).json({error: 'Not enough available spots'});
             }
 
@@ -41,7 +43,7 @@ const createBooking = (req, res) => {
             }
 
             const bookingQuery = `INSERT INTO Bookings (UserID, TourID, NumberOfTickets, BookingStatus) VALUES (?, ?, ?, ?)`;
-            const params = [userID, TourID, numberOfTickets, 'confirmed'];
+            const params = [userID, TourID, NumberOfTickets, 'confirmed'];
 
             db.run(bookingQuery, params, function(err) {
                 if (err) {
@@ -49,7 +51,7 @@ const createBooking = (req, res) => {
                 }
 
                 const updateTourQuery = `UPDATE Tours SET AvailableSpots = AvailableSpots - ? WHERE TourID = ?`;
-                const params = [numberOfTickets, TourID];
+                const params = [NumberOfTickets, TourID];
                 db.run(updateTourQuery, params, function(err) {
                     if (err) {
                         db.run(`DELETE FROM Bookings WHERE BookingID = ?`, [this.lastID]);
@@ -86,9 +88,9 @@ const getBookingByID = (req, res) => {
 
 const updateBooking = (req, res) => {
     const {bookingID} = req.params;
-    const {numberOfTickets} = req.body;
+    const {NumberOfTickets} = req.body;
 
-    if (!numberOfTickets) {
+    if (!NumberOfTickets) {
         return res.status(400).json({error: 'Number of tickets is required'});
     }
 
@@ -120,14 +122,14 @@ const updateBooking = (req, res) => {
                 return res.status(400).json({error: 'Cannot update booking for a canceled tour'});
             }
 
-            const spotsDifference = numberOfTickets - booking.NumberOfTickets;
+            const spotsDifference = NumberOfTickets - booking.NumberOfTickets;
 
             if (spotsDifference > tour.AvailableSpots) {
                 return res.status(400).json({error: 'Not enough available spots for the update'});
             }
 
             const updateBookingQuery = 'UPDATE Bookings SET NumberOfTickets = ? WHERE BookingID = ?';
-            db.run(updateBookingQuery, [numberOfTickets, bookingID], function(err) {
+            db.run(updateBookingQuery, [NumberOfTickets, bookingID], function(err) {
                 if (err) {
                     return res.status(500).json({error: 'Failed to update booking'});
                 }
