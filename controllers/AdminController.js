@@ -1,7 +1,17 @@
 const {db} = require('../config/db');
 
 const createTour = (req, res) => {
-    const {guideID, title, description, startTime, endTime, date, maxParticipants, price, language} = req.body;
+    // const {guideID, title, description, startTime, endTime, date, maxParticipants, price, language} = req.body;
+    guideID = req.body.guideID
+    title = req.body.title
+    description = req.body.description
+    startTime =  req.body.startTime
+    endTime = req.body.endTime
+    date = req.body.date
+    availableSpots = req.body.availableSpots
+    maxParticipants = req.body.maxParticipants
+    price = req.body.price
+    language = req.body.language
     
     if (!guideID || !title || !startTime || !endTime || !date || !maxParticipants || !price || !language) {
         return res.status(400).json({error: 'All fields are required'});
@@ -22,7 +32,7 @@ const createTour = (req, res) => {
             return res.status(403).json({error: 'User is not authorized to create tours'});
         }
 
-        const query = `INSERT INTO Tours VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO Tours (GuideID, Title, Description, StartTime, EndTime, Date, MaxParticipants, AvailableSpots, Price, Language, TourStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         const params = [guideID, title, description || '', startTime, endTime, date, maxParticipants, maxParticipants, price, language, 'scheduled'];
 
         db.run(query, params, function(err) {
@@ -87,14 +97,14 @@ const deleteTour = (req, res) => {
 
 const updateTourStatus = (req, res) => {
     const {tourID} = req.params;
-    const {tourStatus} = req.body;
+    const {TourStatus} = req.body;
 
-    if (!tourID || !tourStatus) {
-        return res.status(400).json({error: 'Tour ID and status are required'});
+    if (!TourStatus) {
+        return res.status(400).json({error: 'Tour status is required'});
     }
 
     const validStatuses = ['scheduled', 'ongoing', 'completed', 'canceled'];
-    if (!validStatuses.includes(tourStatus)) {
+    if (!validStatuses.includes(TourStatus)) {
         return res.status(400).json({error: 'Invalid tour status'});
     }
 
@@ -111,7 +121,7 @@ const updateTourStatus = (req, res) => {
 
         const query = 'UPDATE Tours SET TourStatus = ? WHERE TourID = ?';
 
-        db.run(query, [tourStatus, tourID], function(err) {
+        db.run(query, [TourStatus, tourID], function(err) {
             if (err) {
                 return res.status(500).json({error: 'Failed to update tour status'});
             }
