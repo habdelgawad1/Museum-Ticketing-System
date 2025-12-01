@@ -1,4 +1,20 @@
 const express = require('express');
-const router = express.Router();
+const BookingRouter = express.Router();
+const {createBooking, getBookingByID, updateBooking, cancelBooking, payBookingCash, payBookingPoints} = require('../controllers/BookingController');
+const {validateCreateBooking} = require('../middleware/BookingMiddleware');
 
-module.exports = router;
+BookingRouter.route('/')
+    .post(validateCreateBooking, createBooking);
+
+BookingRouter.route('/:bookingID')
+    .get(getBookingByID)
+    .put(updateBooking)
+    .delete(cancelBooking);
+
+BookingRouter.route('/:bookingID/pay-cash')
+    .post(payBookingCash);
+
+BookingRouter.route('/:bookingID/pay-points')
+    .post(payBookingPoints);
+
+module.exports = BookingRouter;

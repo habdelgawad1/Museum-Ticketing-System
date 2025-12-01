@@ -1,4 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const Reviewrouter = express.Router();
+const {createReview, getReviewsByTour} = require('../controllers/ReviewController');
 
-module.exports = router;
+Reviewrouter.route('/')
+    .post(createReview);
+
+Reviewrouter.route('/tour/:tourID')
+    .get(getReviewsByTour);
+
+module.exports = Reviewrouter;
