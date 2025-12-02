@@ -5,7 +5,7 @@ const {createReview, getReviewsByTour} = require('../controllers/ReviewControlle
 Reviewrouter.route('/')
     .post(createReview);
 
-Reviewrouter.route('/tour/:tourID')
+Reviewrouter.route('/:tourID')
     .get(getReviewsByTour);
 
 module.exports = Reviewrouter;

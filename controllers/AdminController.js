@@ -131,10 +131,66 @@ const updateTourStatus = (req, res) => {
     });
 };
 
+const createAdmin = (req, res) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const password = req.body.password;
+    const phone = req.body.phone;
+    const role = 'admin';
+
+    if (!name || !email || !password) {
+        return res.status(400).json({error: 'All fields are required'});
+    }
+
+    const query = `INSERT INTO Users (Name, Email, Password, Phone, Role) VALUES (?, ?, ?, ?, ?)`;
+    const params = [name, email, password, phone, role];
+
+    db.run(query, params, function(err) {
+        if (err) {
+            return res.status(500).json({error: 'Failed to create admin'});
+        }
+
+        return res.status(201).json({message: 'Admin created successfully'});
+        }
+    );
+};
+
+const deleteAdmin = (req, res) => {
+    const {adminID} = req.params;   
+    if (!adminID) {
+        return res.status(400).json({error: 'Admin ID is required'});
+    }
+
+    const verifyQuery = 'SELECT * FROM Users WHERE UserID = ? AND Role = ?';
+
+    db.get(verifyQuery, [adminID, 'admin'], (err, admin) => {
+        if (err) {
+            return res.status(500).json({error: 'Database error'});
+        }
+
+        if (!admin) {
+            return res.status(404).json({error: 'Admin not found'});
+        }
+
+        const query = 'DELETE FROM Users WHERE UserID = ? AND Role = ?';
+
+        db.run(query, [adminID, 'admin'], function(err) {
+            if (err) {
+                return res.status(500).json({error: 'Failed to delete admin'});
+            }
+
+            return res.status(200).json({message: 'Admin deleted successfully'});
+        });
+    });
+};
+
+
 module.exports = {
     createTour,
     getAllToursAdmin,
     deleteTour,
-    updateTourStatus
+    updateTourStatus,
+    createAdmin,
+    deleteAdmin
 };
 

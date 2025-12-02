@@ -1,7 +1,11 @@
 const {db} = require('../config/db');
 
 const createReview = (req, res) => {
-    const {userID, tourID, bookingID, rating, comment} = req.body;
+    const userID = req.body.userID;
+    const tourID = req.body.tourID;
+    const bookingID = req.body.bookingID;
+    const rating = req.body.rating;
+    const comment = req.body.comment;
 
     if (!userID || !tourID || !bookingID || !rating) {
         return res.status(400).json({error: 'All fields except comment are required'});

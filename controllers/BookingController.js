@@ -2,7 +2,7 @@ const {db} = require('../config/db');
 
 const createBooking = (req, res) => {
     const userID = req.body.userID;
-    const TourID = req.body.tourID;
+    const TourID = req.body.TourID;
     const NumberOfTickets = req.body.NumberOfTickets;
 
     if (!userID || !TourID || !NumberOfTickets) {
@@ -24,7 +24,7 @@ const createBooking = (req, res) => {
             return res.status(404).json({error: 'User not found'});
         }
 
-        const tourQuery = `SELECT AvailableSpots, Price FROM Tours WHERE TourID = ?`;
+        const tourQuery = `SELECT * FROM Tours WHERE TourID = ?`;
         db.get(tourQuery, [TourID], (err, tour) => {
             if (err) {
                 return res.status(500).json({error: 'Database error'});

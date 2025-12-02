@@ -1,10 +1,9 @@
 const express = require('express');
 const BookingRouter = express.Router();
 const {createBooking, getBookingByID, updateBooking, cancelBooking, payBookingCash, payBookingPoints} = require('../controllers/BookingController');
-const {validateCreateBooking} = require('../middleware/BookingMiddleware');
 
 BookingRouter.route('/')
-    .post(validateCreateBooking, createBooking);
+    .post(createBooking);
 
 BookingRouter.route('/:bookingID')
     .get(getBookingByID)
