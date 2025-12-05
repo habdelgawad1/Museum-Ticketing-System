@@ -1,7 +1,7 @@
 const {db} = require('../config/db');
+const logger = require('../utils/logger.js');
 
 const createTour = (req, res) => {
-    // const {guideID, title, description, startTime, endTime, date, maxParticipants, price, language} = req.body;
     guideID = req.body.guideID
     title = req.body.title
     description = req.body.description
@@ -21,6 +21,7 @@ const createTour = (req, res) => {
 
     db.get(verifyQuery, [guideID], (err, user) => {
         if (err) {
+            logger.log("Error retrieving User: " + err.message);
             return res.status(500).json({error: 'Database error'});
         }
 
@@ -37,9 +38,11 @@ const createTour = (req, res) => {
 
         db.run(query, params, function(err) {
             if (err) {
+                logger.log("Error creating Tour: " + err.message);
                 return res.status(500).json({error: 'Failed to create tour'});
             }
 
+            logger.log("Tour created successfully: TourID " + this.lastID);
             return res.status(201).json({message: 'Tour created successfully'});
         });
     });
@@ -50,6 +53,7 @@ const getAllToursAdmin = (req, res) => {
 
     db.all(query, [], (err, tours) => {
         if (err) {
+            logger.log("Error retrieving Tours: " + err.message);
             return res.status(500).json({error: 'Database error'});
         }
 
@@ -90,6 +94,7 @@ const deleteTour = (req, res) => {
                 return res.status(500).json({error: 'Failed to delete tour'});
             }
 
+            logger.log("Tour deleted successfully: TourID " + tourID);
             return res.status(200).json({message: 'Tour deleted successfully'});
         });
     });
@@ -112,6 +117,7 @@ const updateTourStatus = (req, res) => {
 
     db.get(verifyQuery, [tourID], (err, tour) => {
         if (err) {
+            logger.log("Error retrieving Tour: " + err.message);
             return res.status(500).json({error: 'Database error'});
         }
 
@@ -123,9 +129,11 @@ const updateTourStatus = (req, res) => {
 
         db.run(query, [TourStatus, tourID], function(err) {
             if (err) {
+                logger.log("Error updating Tour status: " + err.message);
                 return res.status(500).json({error: 'Failed to update tour status'});
             }
 
+            logger.log("Tour status updated successfully: TourID " + tourID);
             return res.status(200).json({message: 'Tour status updated successfully'});
         });
     });
@@ -147,9 +155,11 @@ const createAdmin = (req, res) => {
 
     db.run(query, params, function(err) {
         if (err) {
+            logger.log("Error creating Admin: " + err.message);
             return res.status(500).json({error: 'Failed to create admin'});
         }
 
+        logger.log("Admin created successfully: AdminID " + this.lastID);
         return res.status(201).json({message: 'Admin created successfully'});
         }
     );
@@ -179,6 +189,7 @@ const deleteAdmin = (req, res) => {
                 return res.status(500).json({error: 'Failed to delete admin'});
             }
 
+            logger.log("Admin deleted successfully: AdminID " + adminID);
             return res.status(200).json({message: 'Admin deleted successfully'});
         });
     });

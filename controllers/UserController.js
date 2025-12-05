@@ -55,6 +55,8 @@ const updateProfile = (req, res) => {
                     }
                     return res.status(500).json({ error: "Error Updating User"});
                 }
+
+                logger.log("User updated successfully: UserID " + userID);
                 return res.status(200).json({ message: "User Successfully Updated"});
             });
         }
@@ -89,6 +91,8 @@ const deleteUser = (req, res) => {
             if (this.changes === 0) {
                 return res.status(404).json({ message: "User Not Found"});
             }
+
+            logger.log("User deleted successfully: UserID " + userID);
             return res.status(200).json({ message: "User Successfully Deleted"});
         });
     });

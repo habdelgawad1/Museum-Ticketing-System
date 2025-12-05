@@ -1,4 +1,5 @@
 const {db} = require('../config/db');
+const logger = require('../utils/logger.js');
 
 const createReview = (req, res) => {
     const userID = req.body.userID;
@@ -49,6 +50,8 @@ const createReview = (req, res) => {
                     if (err) {
                         return res.status(500).json({error: 'Database error'});
                     }
+
+                    logger.log("Review created successfully: ReviewID " + this.lastID);
                     res.status(201).json({message: 'Review created', reviewID: this.lastID});
                 });
             });

@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
+const logger = require('./utils/logger.js');
+
+
 
 const BookingRoutes = require('./routes/BookingRoutes.js');
 const UserRoutes = require('./routes/UserRoutes.js');

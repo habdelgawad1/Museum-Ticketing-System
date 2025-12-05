@@ -1,4 +1,5 @@
 const {db} = require('../config/db');
+const logger = require('../utils/logger.js');
 
 const createBooking = (req, res) => {
     const userID = req.body.userID;
@@ -17,28 +18,34 @@ const createBooking = (req, res) => {
 
     db.get(userQuery, [userID], (err, user) => {
         if (err) {
+            logger.log("Error retrieving User: " + err.message);
             return res.status(500).json({error: 'Database error'});
         }
 
         if (!user) {
+            logger.log("Booking Error: User not found - UserID " + userID);
             return res.status(404).json({error: 'User not found'});
         }
 
         const tourQuery = `SELECT * FROM Tours WHERE TourID = ?`;
         db.get(tourQuery, [TourID], (err, tour) => {
             if (err) {
+                logger.log("Error retrieving Tour: " + err.message);
                 return res.status(500).json({error: 'Database error'});
             }
 
             if (!tour) {
+                logger.log("Booking Error: Tour not found - TourID " + TourID);
                 return res.status(404).json({error: 'Tour not found'});
             }
 
             if (tour.AvailableSpots < NumberOfTickets) {
+                logger.log("Booking Error: Not enough available spots for TourID " + TourID);
                 return res.status(400).json({error: 'Not enough available spots'});
             }
 
             if (tour.TourStatus !== 'scheduled') {
+                logger.log("Booking Error: Cannot book a canceled tour - TourID " + TourID);
                 return res.status(400).json({error: 'Cannot book a canceled tour'});
             }
 
@@ -47,6 +54,7 @@ const createBooking = (req, res) => {
 
             db.run(bookingQuery, params, function(err) {
                 if (err) {
+                    logger.log("Error creating booking: " + err.message);
                     return res.status(500).json({error: 'Failed to create booking'});
                 }
 
@@ -54,6 +62,7 @@ const createBooking = (req, res) => {
                 const params = [NumberOfTickets, TourID];
                 db.run(updateTourQuery, params, function(err) {
                     if (err) {
+                        logger.log("Error updating available spots: " + err.message);
                         db.run(`DELETE FROM Bookings WHERE BookingID = ?`, [this.lastID]);
                         return res.status(500).json({error: 'Failed to update available spots'});
                     }
@@ -75,10 +84,12 @@ const getBookingByID = (req, res) => {
 
     db.get(query, [bookingID], (err, booking) => {
         if (err) {
+            logger.log("Error retrieving Booking: " + err.message);
             return res.status(500).json({error: 'Database error'});
         }
 
         if (!booking) {
+            logger.log("Booking not found: BookingID " + bookingID);
             return res.status(404).json({error: 'Booking not found'});
         }
 
@@ -91,20 +102,24 @@ const updateBooking = (req, res) => {
     const {NumberOfTickets} = req.body;
 
     if (!NumberOfTickets) {
+        logger.log("Update Booking Error: Number of tickets is required");
         return res.status(400).json({error: 'Number of tickets is required'});
     }
 
     const bookingQuery = 'SELECT * FROM Bookings WHERE BookingID = ?';
     db.get(bookingQuery, [bookingID], (err, booking) => {
         if (err) {
+            logger.log("Error retrieving Booking: " + err.message);
             return res.status(500).json({error: 'Database error'});
         }
 
         if (!booking) {
+            logger.log("Booking not found: BookingID " + bookingID);
             return res.status(404).json({error: 'Booking not found'});
         }
 
         if (booking.BookingStatus !== 'confirmed') {
+            logger.log("Update Booking Error: Only confirmed bookings can be updated - BookingID " + bookingID);
             return res.status(400).json({error: 'Only confirmed bookings can be updated'});
         }
 
@@ -125,6 +140,7 @@ const updateBooking = (req, res) => {
             const spotsDifference = NumberOfTickets - booking.NumberOfTickets;
 
             if (spotsDifference > tour.AvailableSpots) {
+                logger.log("Update Booking Error: Not enough available spots for the update - BookingID " + bookingID);
                 return res.status(400).json({error: 'Not enough available spots for the update'});
             }
 
@@ -137,9 +153,11 @@ const updateBooking = (req, res) => {
                 const updateTourQuery = 'UPDATE Tours SET AvailableSpots = AvailableSpots - ? WHERE TourID = ?';
                 db.run(updateTourQuery, [spotsDifference, booking.TourID], function(err) {
                     if (err) {
+                        logger.log("Error updating available spots: " + err.message);
                         return res.status(500).json({error: 'Failed to update available spots'});
                     }
 
+                    logger.log("Booking updated successfully: BookingID " + bookingID);
                     return res.status(200).json({message: 'Booking updated successfully'});
                 });
             });
@@ -181,6 +199,7 @@ const cancelBooking = (req, res) => {
                 if (err) {
                     return res.status(500).json({error: 'Failed to update available spots'});
                 }
+                logger.log("Booking canceled successfully: BookingID " + bookingID);
                 return res.status(200).json({message: 'Booking canceled successfully'});
             }); 
         });
@@ -216,6 +235,7 @@ const payBookingCash = (req, res) => {
                 return res.status(500).json({error: 'Failed to update booking status'});
             }
 
+            logger.log("Booking paid successfully with cash: BookingID " + bookingID);
             return res.status(200).json({message: 'Booking paid successfully'});
         });
     });
