@@ -5,7 +5,7 @@ dotenv.config();
 const cors = require('cors');
 
 const corsOptions = {
-    origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL, 
     methods: ['GET','PUT','POST','DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 200,
