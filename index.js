@@ -2,9 +2,17 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
-const logger = require('./utils/logger.js');
+const cors = require('cors');
 
+const corsOptions = {
+    origin: process.env.CLIENT_URL,
+    methods: ['GET','PUT','POST','DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200,
+    credentials: true,
+};
 
+app.use(cors(corsOptions));
 
 const BookingRoutes = require('./routes/BookingRoutes.js');
 const UserRoutes = require('./routes/UserRoutes.js');
