@@ -20,6 +20,7 @@ const createReview = (req, res) => {
 
     db.get(userQuery, [userID], (err, user) => {
         if (err) {
+            logger.error("Error Verifying User: " + err);
             return res.status(500).json({error: 'Database error'});
         }
         if (!user) {
@@ -29,6 +30,7 @@ const createReview = (req, res) => {
         const tourQuery = `SELECT TourID FROM Tours WHERE TourID = ?`;
         db.get(tourQuery, [tourID], (err, tour) => {
             if (err) {
+                logger.error("Error Verifying Tour: " + err);
                 return res.status(500).json({error: 'Database error'});
             }
             if (!tour) {
@@ -38,6 +40,7 @@ const createReview = (req, res) => {
             const bookingQuery = `SELECT * FROM Bookings WHERE BookingID = ?`;
             db.get(bookingQuery, [bookingID], (err, booking) => {
                 if (err) {
+                    logger.error("Error Verifying Booking: " + err);
                     return res.status(500).json({error: 'Database error'});
                 }
                 if (!booking) {
@@ -48,6 +51,7 @@ const createReview = (req, res) => {
                 params = [userID, tourID, bookingID, rating, comment || ''];
                 db.run(insertQuery, params, function(err) {
                     if (err) {
+                        logger.error("Error Creating Review: " + err);
                         return res.status(500).json({error: 'Database error'});
                     }
 
@@ -69,8 +73,10 @@ const getReviewsByTour = (req, res) => {
     const query = `SELECT * FROM Reviews WHERE TourID = ?`;
     db.all(query, [tourID], (err, reviews) => {
         if (err) {
+            logger.error("Error Retrieving Reviews: " + err);
             return res.status(500).json({error: 'Database error'});
         }
+        logger.log(`Reviews retrieved successfully for TourID ${tourID}`);
         res.status(200).json(reviews);
     });
 };

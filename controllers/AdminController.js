@@ -61,6 +61,7 @@ const getAllToursAdmin = (req, res) => {
             return res.status(404).json({error: 'No tours found'});
         }
 
+        logger.log("Tours retrieved successfully: Count " + tours.length);
         return res.status(200).json({   
                 message: 'Tours retrieved successfully',
                 count: tours.length,
@@ -80,6 +81,7 @@ const deleteTour = (req, res) => {
 
     db.get(verifyQuery, [tourID], (err, tour) => {
         if (err) {
+            logger.log("Error retrieving Tour: " + err.message);
             return res.status(500).json({error: 'Database error'});
         }
 
@@ -91,6 +93,7 @@ const deleteTour = (req, res) => {
 
         db.run(query, [tourID], function(err) {
             if (err) {
+                logger.log("Error deleting Tour: " + err.message);
                 return res.status(500).json({error: 'Failed to delete tour'});
             }
 

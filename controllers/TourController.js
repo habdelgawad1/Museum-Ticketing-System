@@ -6,6 +6,7 @@ const getAllTours = (req, res) => {
 
     db.all(query, params, (err, rows) => {
         if (err) {
+            logger.error("Error Retrieving Scheduled Tours: " + err);
             console.error(err.message);
             return res.status(500).json({ error: 'Error Retrieving Tours' });
         }
@@ -13,7 +14,7 @@ const getAllTours = (req, res) => {
         if (rows.length === 0) {
             return res.status(404).json({ message: 'No Scheduled Tours Found' });
         }
-
+        logger.log("Scheduled Tours retrieved successfully");
         return res.status(200).json({
             message: 'Scheduled Tours Retrieved Successfully',
             count: rows.length,
@@ -34,6 +35,7 @@ const getTourById = (req, res) => {
 
     db.get(query, params, (err, row) => {
         if (err) {
+            logger.error("Error Retrieving Tour: " + err);
             console.error(err.message);
             return res.status(500).json({ error: 'Error Retrieving Tour' });
         }
@@ -41,7 +43,7 @@ const getTourById = (req, res) => {
         if (!row) {
             return res.status(404).json({ message: 'Tour Not Found' });
         }
-
+        logger.log(`Tour retrieved successfully: TourID ${tourID}`);
         return res.status(200).json({
             message: 'Tour Retrieved Successfully',
             tour: row
@@ -60,6 +62,7 @@ const getToursByGuide = (req, res) => {
 
     db.get(verifyQuery, [guideID], (err, user) => {
         if (err) {
+            logger.error("Error Verifying Guide: " + err);
             console.error(err.message);
             return res.status(500).json({ error: 'Error Verifying Guide' });
         }
@@ -76,6 +79,7 @@ const getToursByGuide = (req, res) => {
         
         db.all(query, [guideID], (err, rows) => {
             if (err) {
+                logger.error("Error Retrieving Tours for GuideID " + guideID + ": " + err);
                 console.error(err.message);
                 return res.status(500).json({ error: 'Error Retrieving Tours' });
             }
@@ -83,7 +87,7 @@ const getToursByGuide = (req, res) => {
             if (rows.length === 0) {
                 return res.status(404).json({ message: 'No Tours Found for this Guide' });
             }
-
+            logger.log(`Tours retrieved successfully for GuideID ${guideID}`);
             return res.status(200).json({
                 message: 'Tours Retrieved Successfully',
                 count: rows.length,

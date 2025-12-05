@@ -26,6 +26,7 @@ const updateProfile = (req, res) => {
             if (password && password.trim() !== "") {
             bcrypt.hash(password, 10, (err, hashedPassword) => {
                 if (err) {
+                    logger.error("Error in Hashing Password: " + err);
                     return res.status(500).json({ message: "Error in Hashing Password"});
                 }
 
@@ -40,6 +41,7 @@ const updateProfile = (req, res) => {
                         }
                         return res.status(500).json({ error: "Error Updating User"});
                     }
+                logger.log("User updated successfully: UserID " + userID);
                     return res.status(200).json({ message: "User Successfully Updated"});
             });
         });
@@ -75,6 +77,7 @@ const deleteUser = (req, res) => {
     db.get(query, [userID], (err, row) => {
         if (err) {
             console.log(err);
+            logger.error("Error Retrieving User: " + err);
             return res.status(500).json({ error: "Error Deleting User"});
         }
         if (!row) {
@@ -109,6 +112,7 @@ const getUserProfile = (req, res) => {
 
     db.get(query, [userID], (err, row) => {
         if (err) {
+            logger.error("Error Retrieving User Profile: " + err);
             console.log(err);
             return res.status(500).json({ error: "Error Retrieving User Profile"});
         }
@@ -116,7 +120,7 @@ const getUserProfile = (req, res) => {
         if (!row) {
             return res.status(404).json({ message: "User Not Found"});
         }
-
+        logger.log("User Profile Retrieved Successfully: UserID " + userID);
         return res.status(200).json({ message: "User Profile Retrieved Successfully", profile: row});
 
     });
