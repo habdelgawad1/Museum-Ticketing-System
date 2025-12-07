@@ -39,6 +39,7 @@ const signup = (req, res) => {
 
             res.cookie('SignedUp', `User Email ${email}`, {
             httpOnly: true,
+            sameSite: 'strict',
             maxAge: 15*60*1000
         });
             logger.log("User Successfully Created: " + email);
@@ -84,6 +85,7 @@ const login = (req, res) => {
             
             res.cookie("LoggedIn", `User Email ${email}`, {
                 httpOnly: true,
+                sameSite: 'strict',
                 maxAge: 15*60*1000
             });
 
