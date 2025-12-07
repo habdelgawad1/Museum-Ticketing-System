@@ -1,4 +1,5 @@
 const {db} = require('../config/db');
+const logger = require('../utils/logger');
 
 const getAllTours = (req, res) => {
     const query = `SELECT * FROM tours WHERE TourStatus = ? ORDER BY Date ASC, StartTime ASC`;
