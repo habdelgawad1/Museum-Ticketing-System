@@ -105,7 +105,7 @@ const deleteTour = (req, res) => {
 
 const updateTourStatus = (req, res) => {
     const {tourID} = req.params;
-    const {TourStatus} = req.body;
+    const TourStatus = req.body.TourStatus;
 
     if (!TourStatus) {
         return res.status(400).json({error: 'Tour status is required'});
@@ -153,19 +153,26 @@ const createAdmin = (req, res) => {
         return res.status(400).json({error: 'All fields are required'});
     }
 
-    const query = `INSERT INTO Users (Name, Email, Password, Phone, Role) VALUES (?, ?, ?, ?, ?)`;
-    const params = [name, email, password, phone, role];
-
-    db.run(query, params, function(err) {
+    bcrypt.hash(password, 10, (err, hashedpassword) => {
         if (err) {
-            logger.log("Error creating Admin: " + err.message);
-            return res.status(500).json({error: 'Failed to create admin'});
+            logger.log("Error in Hashing Password: " + err.message);
+            return res.status(500).json({ message: "Error in Hashing Password"});
         }
 
-        logger.log("Admin created successfully: AdminID " + this.lastID);
-        return res.status(201).json({message: 'Admin created successfully'});
-        }
-    );
+        const query = `INSERT INTO Users (Name, Email, Password, Phone, Role) VALUES (?, ?, ?, ?, ?)`;
+        const params = [name, email, hashedpassword, phone, role];
+
+        db.run(query, params, function(err) {
+            if (err) {
+                logger.log("Error creating Admin: " + err.message);
+                return res.status(500).json({error: 'Failed to create admin'});
+            }
+
+            logger.log("Admin created successfully: AdminID " + this.lastID);
+            return res.status(201).json({message: 'Admin created successfully'});
+            }
+        );
+    });
 };
 
 const deleteAdmin = (req, res) => {

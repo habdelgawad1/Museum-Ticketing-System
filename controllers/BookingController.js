@@ -3,10 +3,10 @@ const logger = require('../utils/logger.js');
 
 const createBooking = (req, res) => {
     const userID = req.body.userID;
-    const TourID = req.body.TourID;
+    const tourID = req.body.tourID;
     const NumberOfTickets = req.body.NumberOfTickets;
 
-    if (!userID || !TourID || !NumberOfTickets) {
+    if (!userID || !tourID || !NumberOfTickets) {
         return res.status(400).json({error: 'All fields are required'});
     }
 
@@ -27,7 +27,7 @@ const createBooking = (req, res) => {
         }
 
         const tourQuery = `SELECT * FROM Tours WHERE TourID = ?`;
-        db.get(tourQuery, [TourID], (err, tour) => {
+        db.get(tourQuery, [tourID], (err, tour) => {
             if (err) {
                 logger.log("Error retrieving Tour: " + err.message);
                 return res.status(500).json({error: 'Database error'});
@@ -46,7 +46,7 @@ const createBooking = (req, res) => {
             }
 
             const bookingQuery = `INSERT INTO Bookings (UserID, TourID, NumberOfTickets, BookingStatus) VALUES (?, ?, ?, ?)`;
-            const params = [userID, TourID, NumberOfTickets, 'confirmed'];
+            const params = [userID, tourID, NumberOfTickets, 'confirmed'];
 
             db.run(bookingQuery, params, function(err) {
                 if (err) {
@@ -55,7 +55,7 @@ const createBooking = (req, res) => {
                 }
 
                 const updateTourQuery = `UPDATE Tours SET AvailableSpots = AvailableSpots - ? WHERE TourID = ?`;
-                const params = [NumberOfTickets, TourID];
+                const params = [NumberOfTickets, tourID];
                 db.run(updateTourQuery, params, function(err) {
                     if (err) {
                         logger.log("Error updating available spots: " + err.message);
@@ -126,7 +126,7 @@ const updateBooking = (req, res) => {
                 return res.status(404).json({error: 'Tour not found'});
             }
 
-            if (tour.TourStatus !== 'scheduled') {
+            if (tour.TourStatus !== 'cancelled') {
                 return res.status(400).json({error: 'Cannot update booking for a canceled tour'});
             }
 

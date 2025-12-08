@@ -1,5 +1,6 @@
 const {db} = require('../config/db');
 const bcrypt = require('bcryptjs');
+const logger = require('../utils/logger.js');
 
 const updateProfile = (req, res) => {
     const userID = req.body.userID;
