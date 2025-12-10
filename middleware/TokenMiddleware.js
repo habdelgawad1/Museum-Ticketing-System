@@ -20,7 +20,7 @@ const verifyToken = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-    if (req.user && req.user.role === 'admin') {
+    if (req.user && req.user.Role === 'admin') {
         next();
     } else {
         logger.log('Admin access required');
@@ -29,8 +29,8 @@ const isAdmin = (req, res, next) => {
 };
 
 const isOwner = (req, res, next) => {
-    const resourceOwnerId = req.params.userId || req.body.userId;
-    if (req.user && req.user.id === resourceOwnerId) {
+    const resourceOwnerId = req.params.userID || req.body.userID;
+    if (req.user && req.user.UserID === resourceOwnerId) {
         next();
     } else {
         logger.log('Owner access required');

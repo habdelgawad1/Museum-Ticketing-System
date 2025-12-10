@@ -81,7 +81,7 @@ const login = (req, res) => {
                 return res.status(400).json({ error: "Invalid Email or Password"});
             }
 
-            const token = signToken(row.userID, row.Role);
+            const token = signToken(row.UserID, row.Role);
             
             res.cookie("LoggedIn", `User Email ${email}`, {
                 httpOnly: true,
@@ -92,7 +92,7 @@ const login = (req, res) => {
             logger.log("User Logged In Successfully: " + email);
             return res.status(200).json({
                 message: "Login Successful",
-                data: {id: row.userID, name: row.Name, email: row.Email, role: row.Role},
+                data: {id: row.UserID, name: row.Name, email: row.Email, role: row.Role},
                 token,
             });
         });
