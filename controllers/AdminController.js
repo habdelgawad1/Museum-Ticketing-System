@@ -1,6 +1,6 @@
 const {db} = require('../config/db');
 const logger = require('../utils/logger.js');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const createTour = (req, res) => {
     guideID = req.body.guideID
