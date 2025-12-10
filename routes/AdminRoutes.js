@@ -2,6 +2,10 @@ const express = require('express');
 const AdminRouter = express.Router();
 const {createTour, getAllToursAdmin, deleteTour, updateTourStatus, createAdmin, deleteAdmin} = require('../controllers/AdminController');
 const {validateSignup} = require('../middleware/AuthMiddleware');
+const {verifyToken, isAdmin} = require('../middleware/TokenMiddleware');
+
+AdminRouter.use(verifyToken);
+AdminRouter.use(isAdmin);
 
 AdminRouter.route('/admins')
     .post(validateSignup, createAdmin);

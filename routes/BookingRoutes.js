@@ -1,6 +1,9 @@
 const express = require('express');
 const BookingRouter = express.Router();
 const {createBooking, getBookingByID, updateBooking, cancelBooking, payBookingCash, payBookingPoints} = require('../controllers/BookingController');
+const {verifyToken} = require('../middleware/TokenMiddleware');
+
+BookingRouter.use(verifyToken);
 
 BookingRouter.route('/')
     .post(createBooking);
