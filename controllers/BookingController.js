@@ -126,7 +126,7 @@ const updateBooking = (req, res) => {
                 return res.status(404).json({error: 'Tour not found'});
             }
 
-            if (tour.TourStatus !== 'cancelled') {
+            if (tour.TourStatus === 'cancelled') {
                 return res.status(400).json({error: 'Cannot update booking for a canceled tour'});
             }
 
