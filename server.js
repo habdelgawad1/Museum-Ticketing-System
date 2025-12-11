@@ -3,6 +3,9 @@ const PORT = process.env.PORT
 const db_access = require('./config/db.js');
 const db = db_access.db;
 const logger = require('./utils/logger.js');
+const setSecurityHeaders = require('./middleware/HeadersMiddleware.js');
+
+app.use(setSecurityHeaders);
 
 db.serialize(() => {
     db.run(db_access.CreateUsersTable, (err) => {

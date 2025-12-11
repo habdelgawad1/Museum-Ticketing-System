@@ -21,4 +21,4 @@ AdminRouter.route('/tours/:tourID')
     .delete(deleteTour)
     .put(updateTourStatus);
 
-module.exports = AdminRouter;
+module.exports = AdminRouter; 
